@@ -1,4 +1,9 @@
-#window{
+body,
+html {
+    height: 100%;
+}
+
+#window {
     margin-top: 50px;
     background-color: #000;
     color: #fff;
@@ -6,11 +11,13 @@
     border-radius: 20px;
     box-shadow: 0 0 5px black;
 }
+
 .swapbox_select {
     width: 50%;
     float: left;
 }
-.swapbox{
+
+.swapbox {
     overflow: auto;
     margin: 20px 0;
     padding: 20px;
@@ -18,27 +25,62 @@
     border-radius: 20px;
     border: 1px solid #565656;
 }
-.token_select{
-    padding:5px 0;
+
+.token_select {
+    padding: 5px 0;
 }
-.token_select:hover{
+
+.token_select:hover {
     background-color: #464646;
     cursor: pointer;
-    
+
 }
-.token_row{
+
+.token_row {
     padding: 5px 10px;
 }
-.token_row:hover{
+
+.token_row:hover {
     background-color: #e4e4e4;
     cursor: pointer;
 }
-.gas_estimate_label{
-    padding:5px;
+
+.gas_estimate_label {
+    padding: 5px;
 }
-.modal-body{
+
+.modal-body {
     height: 500px;
-    overflow: scroll;   
+    overflow: scroll;
 }
 
+.bg-image {
+    background-image: url("artlu99-Avatar.png");
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
 
+    height: 30%;
+
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Position text in the middle of the page/image */
+.bg-text {
+    /* Fallback */
+    background-color: rgb(0, 0, 0);
+    /* Black w/opacity/see-through */
+    background-color: rgba(0, 0, 0, 0.4);
+
+    color: white;
+    font-weight: bold;
+    border: 3px solid #f1f1f1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 50%;
+    padding: 20px;
+    text-align: center;
+}
