@@ -3,10 +3,13 @@ const { default: BigNumber } = require('bignumber.js');
 const qs = require('qs');
 const Web3 = require('web3');
 
-const tokensAllowList = ['WETH', 'DAI'];
+const tokensAllowList = ['WBTC', 'WETH', 'MATIC', 'FTM', 'DAI', 'USDC', 'USDT', 'FRAX'];
 const fullTokenListSource = 'CoinGecko';
 const fullTokenListURL = 'https://tokens.coingecko.com/uniswap/all.json';
 const baseURL = 'https://api.0x.org';  // Ethereum mainnet
+// const baseURL = 'https://polygon.api.0x.org';  // Polygon
+// const baseURL = 'https://optimism.api.0x.org';  // Optimism
+// const baseURL = 'https://fantom.api.0x.org';  // Fantom
 
 let currentTrade = {};
 let currentSelectSide;
