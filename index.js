@@ -154,16 +154,20 @@ async function trySwap() {
 
   console.log("setup ERC20TokenContract: ", ERC20TokenContract);
 
-  const maxApproval = new BigNumber(2).pow(256).minus(1);
-
-  ERC20TokenContract.methods.approve(
-    swapQuoteJSON.allowanceTarget,
-    maxApproval,
-  )
-    .send({ from: takerAddress })
-    .then(tx => {
-      console.log("tx: ", tx)
-    });
+  const currentAllowance = new BigNumber(
+    ERC20TokenContract.allowance(takerAddress, swapQuoteJSON.allowanceTarget).call()
+  );
+  console.log("sellAmount:", swapQuoteJSON.sellAmount)
+  console.log("currentAllowance:", currentAllowance);
+  if (currentAllowance.isLessThan(swapQuoteJSON.sellAmount)) {
+    console.log("awaiting approval for", swapQuoteJSON.sellAmount, "at", swapQuoteJSON.allowanceTarget, "from", takerAddress)
+    await ERC20TokenContract
+      .approve(swapQuoteJSON.allowanceTarget, swapQuoteJSON.sellAmount)
+      .send({ from: takerAddress })
+      .then(tx => {
+        console.log("tx: ", tx)
+      })
+  }
 
   // Perform the swap
   const receipt = await web3.eth.sendTransaction(swapQuoteJSON);
