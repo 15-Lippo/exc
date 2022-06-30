@@ -2,14 +2,23 @@ const { default: BigNumber } = require('bignumber.js');
 const qs = require('qs');
 const Web3 = require('web3');
 
-const tokensAllowList = ['WBTC', 'WETH', 'MATIC', 'FTM', 'DAI', 'USDC', 'USDT', 'FRAX'];
+const tokensAllowList = ['WBTC', 'WETH', 'MATIC', 'FTM', 'DAI', 'USDC', 'USDT', 'FRAX', 'BUSD'];
 const fullTokenListSource = 'CoinGecko';
 const fullTokenListURL = 'https://tokens.coingecko.com/uniswap/all.json';
-const baseURL = 'https://api.0x.org';  // Ethereum mainnet
-// const baseURL = 'https://polygon.api.0x.org';  // Polygon
-// const baseURL = 'https://optimism.api.0x.org';  // Optimism
-// const baseURL = 'https://fantom.api.0x.org';  // Fantom
 
+const networksAllowList = ['Ethereum', 'Polygon', 'Binance Smart Chain', 'Optimism', 'Fantom', 'Celo', 'Avalanche'];
+const networkAPIobj = {
+    'Ethereum': 'https://api.0x.org',  // mainnet
+    'Polygon': 'https://polygon.api.0x.org',
+    'Binance Smart Chain': 'https://bsc.api.0x.org',
+    'Optimism': 'https://optimism.api.0x.org',
+    'Fantom': 'https://fantom.api.0x.org',
+    'Celo': 'https://celo.api.0x.org',
+    'Avalanche': 'https://avalanche.api.0x.org',
+}
+
+let currentNetwork = networksAllowList[0];
+let baseURL = networkAPIobj[currentNetwork];
 let currentTrade = {};
 let currentSelectSide;
 let tokens;
@@ -19,6 +28,8 @@ function shorten_Ether_address(full_address) {
 }
 
 async function init() {
+    document.getElementById("selectedNetwork").innerHTML = currentNetwork;
+
     console.log("initializing full list from", fullTokenListSource, "...");
     let response = await fetch(fullTokenListURL);
     let tokenListJSON = await response.json();
@@ -81,6 +92,12 @@ async function connect() {
     }
 }
 
+function setNetwork(networkId) {
+    currentNetwork = networksAllowList[networkId];
+    baseURL = networkAPIobj[currentNetwork];
+    document.getElementById("selectedNetwork").innerHTML = currentNetwork;
+}
+
 function openModal(side) {
     currentSelectSide = side;
     document.getElementById("token_modal").style.display = "block";
@@ -104,7 +121,7 @@ async function getPrice() {
 
     // Fetch the swap price.
     const response = await fetch(
-        baseURL + `/swap/v1/price?${qs.stringify(params)}`
+        `${baseURL}/swap/v1/price?${qs.stringify(params)}`
     );
 
     swapPriceJSON = await response.json();
@@ -129,7 +146,7 @@ async function getQuote(account) {
 
     // Fetch the swap quote.
     const response = await fetch(
-        baseURL + `/swap/v1/quote?${qs.stringify(params)}`
+        `${baseURL}/swap/v1/quote?${qs.stringify(params)}`
     );
 
     swapQuoteJSON = await response.json();
@@ -182,6 +199,13 @@ async function trySwap() {
 
 init();
 document.getElementById("login_button").onclick = connect;
+document.getElementById("networkDropdown0").onclick = () => { setNetwork(0) };
+document.getElementById("networkDropdown1").onclick = () => { setNetwork(1) };
+document.getElementById("networkDropdown2").onclick = () => { setNetwork(2) };
+document.getElementById("networkDropdown3").onclick = () => { setNetwork(3) };
+document.getElementById("networkDropdown4").onclick = () => { setNetwork(4) };
+document.getElementById("networkDropdown5").onclick = () => { setNetwork(5) };
+document.getElementById("networkDropdown6").onclick = () => { setNetwork(6) };
 document.getElementById("from_token_select").onclick = () => { openModal("from") };
 document.getElementById("to_token_select").onclick = () => { openModal("to") };
 document.getElementById("modal_close").onclick = closeModal;

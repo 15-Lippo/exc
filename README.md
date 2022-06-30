@@ -13,6 +13,9 @@
 
 1. Part 8(ii) set approval amount to ~~maxApproval~~ only what's needed
 (video @54:26)
+2. update Wallet Connect button to show connected (shortened) wallet address
+3. allow user to switch networks/chains
+4. front-end design/branding
 
 ## Links
 * The [Alchemy](https://www.alchemy.com/) [Road to Web3](https://docs.alchemy.com/alchemy/road-to-web3/welcome-to-the-road-to-web3) [Week 9: Token Swap dApp with 0x API](https://docs.alchemy.com/alchemy/road-to-web3/weekly-learning-challenges/9.-how-to-build-a-token-swap-dapp-with-0x-api) blog post
