@@ -2,39 +2,36 @@ const { default: BigNumber } = require('bignumber.js');
 const qs = require('qs');
 const Web3 = require('web3');
 
+const tokensAllowList = ['WETH', 'DAI'];
 
 let currentTrade = {};
 let currentSelectSide;
 let tokens;
 
 async function init() {
-  await listAvailableTokens();
-}
-
-async function listAvailableTokens() {
-  console.log("initializing");
+  console.log("initializing full CoinGecko list");
   let response = await fetch('https://tokens.coingecko.com/uniswap/all.json');
   let tokenListJSON = await response.json();
-  console.log("listing available tokens");
-  console.log(tokenListJSON);
-  tokens = tokenListJSON.tokens
-  console.log("tokens:", tokens);
+  tokens = tokenListJSON.tokens;
+  console.log(tokens);
 
   // create token list for modal
   let parent = document.getElementById("token_list");
   for (const i in tokens) {
     // token row in the modal token list
-    let div = document.createElement("div");
-    div.className = "token_row";
-    let html = `
+    if (tokensAllowList.includes(tokens[i].symbol)) {
+      let div = document.createElement("div");
+      div.className = "token_row";
+      let html = `
     <img class="token_list_img" src="${tokens[i].logoURI}">
       <span class="token_list_text">${tokens[i].symbol}</span>
       `;
-    div.innerHTML = html;
-    div.onclick = () => {
-      selectToken(tokens[i]);
-    };
-    parent.appendChild(div);
+      div.innerHTML = html;
+      div.onclick = () => {
+        selectToken(tokens[i]);
+      };
+      parent.appendChild(div);
+    }
   }
 }
 
