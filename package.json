@@ -1,4 +1,5 @@
 {
+  "license": "Unlicense",
   "dependencies": {
     "browserify": "^17.0.0",
     "global": "^4.4.0",
