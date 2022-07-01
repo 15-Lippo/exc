@@ -70,13 +70,13 @@ html {
     /* Fallback */
     background-color: rgb(0, 0, 0);
     /* Black w/opacity/see-through */
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.1);
 
     color: white;
     font-weight: bold;
     border: 3px solid #f1f1f1;
     position: absolute;
-    top: 50%;
+    top: 90%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
