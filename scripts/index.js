@@ -1,25 +1,27 @@
+
 const { default: BigNumber } = require('bignumber.js');
 const qs = require('qs');
 const Web3 = require('web3');
 
 const tokensAllowList = ['WBTC', 'WETH', 'MATIC', 'FTM', 'DAI', 'USDC', 'USDT', 'FRAX', 'BUSD'];
 const fullTokenListSource = 'CoinGecko';
-const fullTokenListURL = 'https://tokens.coingecko.com/uniswap/all.json';
 
-const networksAllowList = ['Ethereum', 'Polygon', 'Binance Smart Chain', 'Optimism', 'Fantom', 'Celo', 'Avalanche'];
+const networksAllowList = ['Ethereum', 'Polygon', 'Binance Smart Chain', 'Optimism', 'Fantom', 'Celo', 'Avalanche', 'Ropsten (Eth)'];
 const networkAPIobj = {
-    'Ethereum': 'https://api.0x.org',  // mainnet
-    'Polygon': 'https://polygon.api.0x.org',
-    'Binance Smart Chain': 'https://bsc.api.0x.org',
-    'Optimism': 'https://optimism.api.0x.org',
-    'Fantom': 'https://fantom.api.0x.org',
-    'Celo': 'https://celo.api.0x.org',
-    'Avalanche': 'https://avalanche.api.0x.org',
+    'Ethereum': ['https://api.0x.org', 'https://tokens.coingecko.com/uniswap/all.json'],  // mainnet
+    'Polygon': ['https://polygon.api.0x.org', 'https://tokens.coingecko.com/polygon-pos/all.json'],
+    'Binance Smart Chain': ['https://bsc.api.0x.org', 'https://tokens.coingecko.com/binance-smart-chain/all.json'],
+    'Optimism': ['https://optimism.api.0x.org', 'https://tokens.coingecko.com/optimistic-ethereum/all.json'],
+    'Fantom': ['https://fantom.api.0x.org', 'https://tokens.coingecko.com/fantom/all.json'],
+    'Celo': ['https://celo.api.0x.org', 'https://tokens.coingecko.com/celo/all.json'],
+    'Avalanche': ['https://avalanche.api.0x.org', 'https://tokens.coingecko.com/avalanche/all.json'],
+    'Ropsten (Eth)': ['https://ropsten.api.0x.org', 'https://tokens.coingecko.com/uniswap/all.json'],
 }
 
 let currentNetwork = networksAllowList[0];
-let baseURL = networkAPIobj[currentNetwork];
-let currentTrade = {};
+let baseURL = networkAPIobj[currentNetwork][0];
+let fullTokenListURL = networkAPIobj[currentNetwork][1];
+let currentTrade;
 let currentSelectSide;
 let tokens;
 
@@ -30,7 +32,7 @@ function shorten_Ether_address(full_address) {
 async function init() {
     document.getElementById("selectedNetwork").innerHTML = currentNetwork;
 
-    console.log("initializing full list from", fullTokenListSource, "...");
+    console.log("initializing full", fullTokenListSource, "list for", currentNetwork, "...");
     let response = await fetch(fullTokenListURL);
     let tokenListJSON = await response.json();
     tokens = tokenListJSON.tokens;
@@ -38,15 +40,13 @@ async function init() {
 
     // create token list for modal
     let parent = document.getElementById("token_list");
+    parent.innerHTML = "";
     for (const i in tokens) {
         // token row in the modal token list
         if (tokensAllowList.includes(tokens[i].symbol)) {
             let div = document.createElement("div");
             div.className = "token_row";
-            let html = `
-    <img class="token_list_img" src="${tokens[i].logoURI}">
-      <span class="token_list_text">${tokens[i].symbol}</span>
-      `;
+            let html = `<img class="token_list_img" src="${tokens[i].logoURI}"><span class="token_list_text">${tokens[i].symbol}</span>`;
             div.innerHTML = html;
             div.onclick = () => {
                 selectToken(tokens[i]);
@@ -54,10 +54,22 @@ async function init() {
             parent.appendChild(div);
         }
     }
+    currentTrade = {};
 }
 
 function selectToken(token) {
     closeModal();
+
+    // TODO: replace this explicit hack with a lookup
+    if ( currentNetwork === 'Ropsten (Eth)' ) {
+        token.chainId = 3;
+        if ( token.symbol === 'WETH' ) {
+            token.address = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
+        }
+        if ( token.symbol === 'DAI') {
+            token.address = '0xaD6D458402F60fD3Bd25163575031ACDce07538D';
+        }
+    }
     currentTrade[currentSelectSide] = token;
     console.log("currentTrade:", currentTrade);
     renderInterface();
@@ -94,8 +106,12 @@ async function connect() {
 
 function setNetwork(networkId) {
     currentNetwork = networksAllowList[networkId];
-    baseURL = networkAPIobj[currentNetwork];
+    baseURL = networkAPIobj[currentNetwork][0];
     document.getElementById("selectedNetwork").innerHTML = currentNetwork;
+
+    fullTokenListURL = networkAPIobj[currentNetwork][1];
+
+    init();
 }
 
 function openModal(side) {
@@ -206,6 +222,7 @@ document.getElementById("networkDropdown3").onclick = () => { setNetwork(3) };
 document.getElementById("networkDropdown4").onclick = () => { setNetwork(4) };
 document.getElementById("networkDropdown5").onclick = () => { setNetwork(5) };
 document.getElementById("networkDropdown6").onclick = () => { setNetwork(6) };
+document.getElementById("networkDropdown7").onclick = () => { setNetwork(7) };
 document.getElementById("from_token_select").onclick = () => { openModal("from") };
 document.getElementById("to_token_select").onclick = () => { openModal("to") };
 document.getElementById("modal_close").onclick = closeModal;
