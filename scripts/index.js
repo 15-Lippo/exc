@@ -3,7 +3,7 @@ const { default: BigNumber } = require('bignumber.js');
 const qs = require('qs');
 const Web3 = require('web3');
 
-const tokensAllowList = ['WBTC', 'WETH', 'MATIC', 'FTM', 'DAI', 'USDC', 'USDT', 'FRAX', 'BUSD'];
+const tokensAllowList = ['WBTC', 'WETH', 'WMATIC', 'WFTM', 'DAI', 'USDC', 'USDT', 'FRAX', 'BUSD'];
 const fullTokenListSource = 'CoinGecko';
 
 const networksAllowList = ['Ethereum', 'Polygon', 'Binance Smart Chain', 'Optimism', 'Fantom', 'Celo', 'Avalanche', 'Ropsten (Eth)'];
