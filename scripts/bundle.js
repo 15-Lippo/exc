@@ -17,7 +17,11 @@ const networkAPIobj = {
     'Avalanche': ['https://avalanche.api.0x.org', 'https://tokens.coingecko.com/avalanche/all.json'],
     'Ropsten (Eth)': ['https://ropsten.api.0x.org', 'https://tokens.coingecko.com/uniswap/all.json'],
 }
-
+const ropstenERC20address = {
+    'DAI': '0x31F42841c2db5173425b5223809CF3A38FEde360', // '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+    'WETH': '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+    'USDC': '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+}
 let currentNetwork = networksAllowList[0];
 let baseURL = networkAPIobj[currentNetwork][0];
 let fullTokenListURL = networkAPIobj[currentNetwork][1];
@@ -60,15 +64,11 @@ async function init() {
 function selectToken(token) {
     closeModal();
 
-    // TODO: replace this explicit hack with a lookup
-    if ( currentNetwork === 'Ropsten (Eth)' ) {
+    if (currentNetwork === 'Ropsten (Eth)') {
         token.chainId = 3;
-        if ( token.symbol === 'WETH' ) {
-            token.address = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
-        }
-        if ( token.symbol === 'DAI') {
-            token.address = '0xaD6D458402F60fD3Bd25163575031ACDce07538D';
-        }
+        try {
+            token.address = ropstenERC20address[token.symbol];
+        } catch (error) { pass }
     }
     currentTrade[currentSelectSide] = token;
     console.log("currentTrade:", currentTrade);
